@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Business Card</title>
+      <link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+      <script>
+        window.addEventListener('load', onloadHandler, false);
+
+        function onloadHandler() {
+           // get the canvas DOM element
+           var canvas = document.getElementById('card-canvas'),
+               ctx = canvas.getContext("2d"),
+               width = canvas.width,
+               height = canvas.height;
+
+           function drawText(x, y, text, colour) {
+             ctx.fillStyle = colour;
+             ctx.fillText(text, x, y);
+           };
+
+           function drawDivider(x, y, w, colour) {
+              ctx.fillStyle = colour;
+              ctx.beginPath();
+              ctx.rect(x, y, w, 2);
+              ctx.fill();
+           };
+
+           function drawRectangle(x, y, w, h, colour, stroke) {
+               ctx.fillStyle = colour;
+               ctx.beginPath();
+               ctx.rect(x, y, w, h);
+               ctx.strokeStyle = stroke;
+               ctx.lineWidth = 3;
+               ctx.stroke();
+               ctx.fill();
+            };
+
+           var offsetx = 0, offsety = 0;
+
+           // init main animation loop
+           requestAnimFrame(loop);
+           function loop()
+           {
+              // compute canvas offset within parent window including page view position
+              var el = canvas;
+              offsetx = offsety = 0;
+              do
+              {
+                 offsetx += el.offsetLeft;
+                 offsety += el.offsetTop;
+              } while (el = el.offsetParent);
+              offsetx = offsetx - window.pageXOffset;
+              offsety = offsety - window.pageYOffset;
+
+              ctx.save();
+
+              // clear the left side of the card
+              // the right hand side is already rendered with fixed text
+              ctx.clearRect(0, 0, width, height);
+
+              // perform initial one time rendering of text etc.
+              ctx.save();
+
+              // create the inner rectangle
+              drawRectangle(25, 25, 510, 270, "rgb(255,255,255)", "rgb(57,108,147)");
+
+              // text time
+              ctx.font = "Bold 18pt 'PT Sans'";
+              drawText(35,80,"Jane 'Plain' Smith", "rgb(57,108,147)");
+              ctx.font = "14pt 'PT Sans'";
+              drawText(35,105,"Futurist", "rgb(57,108,147)");
+
+              // a divider between the name/occupation and contact details
+              drawDivider(35,160,30,"rgb(57,108,147)");
+
+              // last bit of text
+              drawText(35,210,"(+61) 1234 5678", "rgb(80,80,80)");
+              drawText(35,235,"hello@example.com", "rgb(80,80,80)");
+              drawText(35,260,"example.com", "rgb(80,80,80)");
+
+              // and we're done here.
+              ctx.restore();
+
+              requestAnimFrame(loop);
+           };
+        }
+
+        // requestAnimFrame shim
+        window.requestAnimFrame = (function()
+        {
+           return  window.requestAnimationFrame       ||
+                   window.webkitRequestAnimationFrame ||
+                   window.mozRequestAnimationFrame    ||
+                   window.oRequestAnimationFrame      ||
+                   window.msRequestAnimationFrame     ||
+                   function(callback, element)
+                   {
+                       window.setTimeout(callback, 1000 / 60);
+                   };
+        })();
+    </script>
+    <style>
+      body {
+        background: #f5f5f5;
+      }
+      #card-canvas
+      {
+        bottom: 0;
+        background-color: #f4f7f9;
+        box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+        left: 0;
+        margin:auto;
+        position: absolute;
+        right: 0;
+        top:0;
+      }
+    </style>
+   </head>
+
+   <body>
+      <canvas id="card-canvas" width="560" height="320"></canvas>
+   </body>
+    <!--
+     // Plain Jane Card, Copyright 2016 Jordan Gardiner
+     // This work is distributed under the terms of the MIT license
+     // Source: https://github.com/dwightgunning/cards
+     //
+     // Plain Jane Card is derived from the following third-party work:
+     //   Bubble Card, Copyright 2016 Dwight Gunning
+     //   Bubble Card is distributed under the terms of the MIT license
+     //   Source: https://github.com/dwightgunning/cards
+     //
+     //   HTML5 Canvas "Electronic Business Card" Experiment, Copyright 2016 Kevin Roast, Michael Hawley
+     //   HTML5 Canvas "Electronic Business Card" Experiment is distributed under the terms of the MIT license
+     //   Source: http://www.kevs3d.co.uk/dev/eglogo/
+     //
+     // Plain Jane Card bundles the following third-party resources:
+     //
+     //   None
+     -->
+</html>
